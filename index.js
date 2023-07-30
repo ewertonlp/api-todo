@@ -12,7 +12,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
+0;
 app.use(express.json());
 
 mongoose.connect(
@@ -41,8 +41,14 @@ app.get('/', (request, response) => {
 
 //get all
 app.get('/tarefas', async (request, response) => {
-  const res = await TodoSchema.find();
-  return response.json(res);
+  try {
+    const tarefas = await TodoSchema.find();
+    response.json(tarefas);
+  } catch (error) {
+    response
+      .status(500)
+      .json({ mensagem: 'Erro ao obter as tarefas do banco de dados.' });
+  }
 });
 
 //get by id
@@ -59,8 +65,12 @@ app.get('/tarefas/:id', async (request, response) => {
 
 // post
 app.post('/tarefas', async (request, response) => {
-  const res = await TodoSchema.create(request.body);
-  return response.status(201).json(res);
+  try {
+    const novaTarefa = await TodoSchema.create(request.body);
+    response.json(novaTarefa);
+  } catch (error) {
+    res.status(500).json({ mensagem: 'Erro ao criar uma nova tarefa.' });
+  }
 });
 
 //delete
@@ -68,9 +78,11 @@ app.delete('/tarefas/:id', async (request, response) => {
   const id = request.params.id;
   try {
     await TodoSchema.findByIdAndRemove(id);
-    return response.status(204).json();
+    response.json({ mensagem: 'Tarefa excluída com sucesso!' });
   } catch (error) {
-    return response.status(500);
+    response
+      .status(500)
+      .json({ mensagem: 'Erro ao excluir a tarefa do banco de dados.' });
   }
 });
 
@@ -79,13 +91,17 @@ app.put('/tarefas/:id', async (request, response) => {
   const id = request.params.id;
   const body = request.body;
   try {
-    const res = await TodoSchema.findByIdAndUpdate({ _id: id }, body);
-    return response.json(res);
+    const tarefa = await TodoSchema.findByIdAndUpdate({ _id: id }, body);
+    return response.json(tarefa);
   } catch (error) {
-    return response.status(500);
+    return response
+      .status(500)
+      .json({
+        mensagem: 'Erro ao atualizar o status da tarefa no banco de dados.',
+      });
   }
 });
 
 app.listen(PORT, () =>
-  console.log('Servidor iniciado com sucesso em http://localhost:' + PORT)
+  console.log('Servidor iniciado com sucesso na porta:' + PORT)
 );
