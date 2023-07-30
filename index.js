@@ -67,6 +67,6 @@ app.put('/tarefas/:id', async (request, response) => {
   }
 });
 
-app.listen(3333, () =>
+app.listen(PORT, () =>
   console.log('Servidor iniciado com sucesso em http://localhost:' + PORT)
 );
