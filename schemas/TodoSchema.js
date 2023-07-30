@@ -5,10 +5,6 @@ const todoSchema = new Schema({
     type: String,
     required: true,
   },
-  concluido: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 module.exports = model('Todo', todoSchema);

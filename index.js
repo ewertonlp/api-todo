@@ -8,11 +8,11 @@ const PORT = process.env.PORT || 3333;
 const app = express();
 
 const corsOptions = {
-  origin: 'http://127.0.0.1:5173',
+  origin: 'http://127.0.0.1:5173/',
 };
 
 app.use(cors(corsOptions));
-0;
+
 app.use(express.json());
 
 mongoose.connect(
