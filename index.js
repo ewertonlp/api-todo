@@ -15,7 +15,9 @@ mongoose.connect(
 );
 
 app.get('/', (request, response) => {
-  return response.json({ Ping: 'Pong' });
+  return response.json({
+    message: 'Seja bem vindo à API do TODO - Ewerton Lopes!😉',
+  });
 });
 
 //get all
