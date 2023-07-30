@@ -11,8 +11,22 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(
-  'mongodb+srv://admin:admin@cluster0.souffus.mongodb.net/todo-api?retryWrites=true&w=majority'
+  'mongodb+srv://admin:admin@cluster0.souffus.mongodb.net/todo-api?retryWrites=true&w=majority',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
 );
+
+const db = mongoose.connection;
+
+db.on('error', (error) => {
+  console.error('Erro na conexão com o MongoDB:', error);
+});
+
+db.on('open', () => {
+  console.log('Conexão com o MongoDB estabelecida com sucesso!');
+});
 
 app.get('/', (request, response) => {
   return response.json({
@@ -67,6 +81,6 @@ app.put('/tarefas/:id', async (request, response) => {
   }
 });
 
-app.listen(3333, () =>
+app.listen(PORT, () =>
   console.log('Servidor iniciado com sucesso em http://localhost:' + PORT)
 );
