@@ -7,12 +7,12 @@ const TodoSchema = require('./schemas/TodoSchema');
 const PORT = process.env.PORT || 3333;
 const app = express();
 
-const corsOptions = {
-  origin: 'http://localhost:5173/',
-};
+// const corsOptions = {
+//   origin: 'http://localhost:5173/',
+// };
 
-app.use(cors(corsOptions));
-
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 mongoose.connect(
@@ -40,15 +40,9 @@ app.get('/', (request, response) => {
 });
 
 //get all
-app.get('/tarefas', async (request, response) => {
-  try {
-    const tarefas = await TodoSchema.find();
-    response.json(tarefas);
-  } catch (error) {
-    response
-      .status(500)
-      .json({ mensagem: 'Erro ao obter as tarefas do banco de dados.' });
-  }
+app.get("/tarefas", async (request, response) => {
+  const res = await TodoSchema.find();
+  return response.json(res);
 });
 
 //get by id
@@ -64,42 +58,45 @@ app.get('/tarefas/:id', async (request, response) => {
 });
 
 // post
-app.post('/tarefas', async (request, response) => {
-  try {
-    const novaTarefa = await TodoSchema.create(request.body);
-    response.json(novaTarefa);
-  } catch (error) {
-    res.status(500).json({ mensagem: 'Erro ao criar uma nova tarefa.' });
-  }
+app.post("/tarefas", async (request, response) => {
+  const res = await TodoSchema.create(request.body);
+
+  // const body = request.body;
+  // tarefas.push({ ...body, id: Date.now() });
+
+  return response.status(201).json(res);
 });
 
 //delete
-app.delete('/tarefas/:id', async (request, response) => {
+app.delete("/tarefas/:id", async (request, response) => {
   const id = request.params.id;
   try {
     await TodoSchema.findByIdAndRemove(id);
-    response.json({ mensagem: 'Tarefa excluída com sucesso!' });
+
+    return response.status(204).json();
   } catch (error) {
-    response
-      .status(500)
-      .json({ mensagem: 'Erro ao excluir a tarefa do banco de dados.' });
+    return response.status(500).json();
   }
 });
 
 //put
-app.put('/tarefas/:id', async (request, response) => {
+app.put("/tarefas/:id", async (request, response) => {
   const id = request.params.id;
   const body = request.body;
-  try {
-    const tarefa = await TodoSchema.findByIdAndUpdate({ _id: id }, body);
-    return response.json(tarefa);
-  } catch (error) {
-    return response.status(500).json({
-      mensagem: 'Erro ao atualizar o status da tarefa no banco de dados.',
-    });
-  }
+
+  const res = await TodoSchema.findByIdAndUpdate({ _id: id }, body);
+
+  return response.json(res);
+
+  // const indexTarefa = tarefas.findIndex(
+  //   (tarefa) => tarefa.id === Number(request.params.id)
+  // );
+
+  // tarefas[indexTarefa].description = request.body.description;
+
+  // return response.json({ ok: "ok" });
 });
 
 app.listen(PORT, () =>
-  console.log('Servidor iniciado com sucesso na porta:' + PORT)
+  console.log('Servidor iniciado com sucesso em http://localhost:' + PORT)
 );

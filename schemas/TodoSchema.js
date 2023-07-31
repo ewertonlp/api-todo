@@ -1,10 +1,7 @@
 const { Schema, model } = require('mongoose');
 
-const todoSchema = new Schema({
-  descricao: {
-    type: String,
-    required: true,
-  },
+const TodoSchema = new Schema({
+  descricao: String,
 });
 
-module.exports = model('Todo', todoSchema);
+module.exports = model('Todo', TodoSchema);
