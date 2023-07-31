@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3333;
 const app = express();
 
 const corsOptions = {
-  origin: 'http://127.0.0.1:5173/',
+  origin: 'http://localhost:5173/',
 };
 
 app.use(cors(corsOptions));
@@ -94,11 +94,9 @@ app.put('/tarefas/:id', async (request, response) => {
     const tarefa = await TodoSchema.findByIdAndUpdate({ _id: id }, body);
     return response.json(tarefa);
   } catch (error) {
-    return response
-      .status(500)
-      .json({
-        mensagem: 'Erro ao atualizar o status da tarefa no banco de dados.',
-      });
+    return response.status(500).json({
+      mensagem: 'Erro ao atualizar o status da tarefa no banco de dados.',
+    });
   }
 });
 
