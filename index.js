@@ -40,7 +40,7 @@ app.get('/', (request, response) => {
 });
 
 //get all
-app.get("/tarefas", async (request, response) => {
+app.get('/tarefas', async (request, response) => {
   const res = await TodoSchema.find();
   return response.json(res);
 });
@@ -58,7 +58,7 @@ app.get('/tarefas/:id', async (request, response) => {
 });
 
 // post
-app.post("/tarefas", async (request, response) => {
+app.post('/tarefas', async (request, response) => {
   const res = await TodoSchema.create(request.body);
 
   // const body = request.body;
@@ -68,19 +68,25 @@ app.post("/tarefas", async (request, response) => {
 });
 
 //delete
-app.delete("/tarefas/:id", async (request, response) => {
+app.delete('/tarefas/:id', async (request, response) => {
   const id = request.params.id;
   try {
-    await TodoSchema.findByIdAndRemove(id);
+    const deletedTask = await TodoSchema.findByIdAndRemove({ _id: id });
+    if (!deletedTask) {
+      return response.status(404).json({ mensagem: 'Tarefa não encontrada.' });
+    }
 
     return response.status(204).json();
   } catch (error) {
-    return response.status(500).json();
+    console.error('Erro ao deletar tarefa:', error);
+    return response
+      .status(500)
+      .json({ mensagem: 'Erro interno do servidor ao deletar tarefa.' });
   }
 });
 
 //put
-app.put("/tarefas/:id", async (request, response) => {
+app.put('/tarefas/:id', async (request, response) => {
   const id = request.params.id;
   const body = request.body;
 
